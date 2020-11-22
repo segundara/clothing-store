@@ -1,16 +1,166 @@
 import React, { useEffect, useState } from 'react'
-import FetchHandler from '../DataHandler/FetchHandler'
+import {
+    Row,
+    Col,
+    Tab,
+    Nav,
+    Table,
+    Badge,
+    Alert,
+} from "react-bootstrap";
+import Pagination from "react-bootstrap-4-pagination";
 
-function Store() {
-    const [res1, loading1, hasError1] = FetchHandler(`${process.env.REACT_APP_API_URL}/products/jackets`)
-    const [res2, loading2, hasError2] = FetchHandler(`${process.env.REACT_APP_API_URL}/products/shirts`)
-    const [res3, loading3, hasError3] = FetchHandler(`${process.env.REACT_APP_API_URL}/products/accessories`)
+function Store({ inStock }) {
+    console.log(inStock)
+    const [data, setData] = useState(null)
+    const [perPage, setPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageNumbers, setPageNumbers] = useState(null);
+
+    const changePage = (value) => setCurrentPage(value);
+
+    const getPages = () => {
+        const pages = [];
+        inStock.map((item) => {
+            let innerPages = [];
+            for (let j = 1; j <= Math.ceil(item.Product.length / perPage); j++) {
+                innerPages.push(j);
+            }
+            pages.push(innerPages);
+
+        })
+        console.log(pages)
+        setPageNumbers(pages);
+
+    };
+
+    const showCurrentList = () => {
+        let currentDisplay = []
+        for (let i = 0; i < inStock.length; i++) {
+            currentDisplay[i] = {}
+            for (let item in inStock[i]) {
+                currentDisplay[i][item] = inStock[i][item];
+            }
+        }
+
+        for (let j = 0; j < currentDisplay.length; j++) {
+            const element = currentDisplay[j];
+            element.Product = element.Product.slice(currentPage * perPage - perPage, currentPage * perPage)
+        }
+
+        setData(currentDisplay)
+    }
+
+    useEffect(() => {
+        getPages()
+        showCurrentList()
+    }, [currentPage])
 
     return (
         <div>
-            {console.log(res1.slice(10, 20))}
-            {console.log(res2.slice(10, 20))}
-            {console.log(res3.slice(10, 20))}
+            {data && data.length > 0 && (
+                <Tab.Container
+                    id="left-tabs-example"
+                    defaultActiveKey="0"
+                    onSelect={() => changePage(1)}
+                >
+                    <Row>
+                        <Col sm={3}>
+                            <Nav variant="pills" className="flex-column">
+                                {data.map((cat, i) => {
+                                    return (
+                                        <Nav.Item key={i}>
+                                            <Nav.Link
+                                                eventKey={i}
+                                                className="d-flex justify-content-between btn-link px-1"
+                                            >
+                                                <small>
+                                                    <b>{cat.Category}</b>
+                                                </small>
+                                                <Badge variant="light">
+                                                    <span>{cat.Product.length}</span>
+                                                </Badge>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    );
+                                })}
+                            </Nav>
+                        </Col>
+                        <Col sm={9}>
+                            <Tab.Content>
+                                {data.map((list, i) => {
+                                    return (
+                                        <Tab.Pane key={i} eventKey={i}>
+                                            {
+                                                list.Product.length > 0 && (
+                                                    <>
+                                                        <Table responsive="sm" size="sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Name</th>
+                                                                    <th>Price</th>
+                                                                    <th>Manufacturer</th>
+                                                                    <th>Availability</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {list.Product.map((s, i) => {
+                                                                    return (
+                                                                        <tr key={i}>
+                                                                            <td>
+                                                                                {currentPage > 1
+                                                                                    ? (i =
+                                                                                        i +
+                                                                                        1 +
+                                                                                        perPage * currentPage -
+                                                                                        perPage)
+                                                                                    : (i = i + 1)}
+                                                                            </td>
+                                                                            <td>{s.name}</td>
+                                                                            <td>{s.price}</td>
+                                                                            <td>{s.manufacturer}</td>
+                                                                            <td>{s.availability}</td>
+                                                                        </tr>
+                                                                    );
+                                                                })}
+                                                            </tbody>
+                                                        </Table>
+                                                        <div className="d-flex justify-content-between pl-3">
+                                                            <Pagination
+                                                                threeDots
+                                                                totalPages={pageNumbers[i].length}
+                                                                currentPage={currentPage}
+                                                                showMax={5}
+                                                                prevNext
+                                                                activeBgColor="#504c8a"
+                                                                color="#504c8a"
+                                                                activeBorderColor="#504c8a"
+                                                                onClick={(page) => changePage(page)}
+                                                            />
+
+                                                            <Alert variant="light" className="text-right">
+                                                                page <strong>{currentPage}</strong> of{" "}
+                                                                <strong>{pageNumbers[i].length}</strong>
+                                                            </Alert>
+                                                        </div>
+
+                                                    </>
+                                                )}
+                                            {
+                                                list.Product.length < 1 && (
+                                                    <p className="text-center">
+                                                        <strong>No product</strong>
+                                                    </p>
+                                                )}
+                                        </Tab.Pane>
+                                    );
+                                })}
+                            </Tab.Content>
+                        </Col>
+                    </Row>
+                </Tab.Container>
+            )}
         </div>
     )
 }
