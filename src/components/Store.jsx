@@ -78,7 +78,7 @@ function Store({ inStock }) {
                                                     <b>{cat.Category}</b>
                                                 </small>
                                                 <Badge variant="light">
-                                                    <span>{cat.Product.length}</span>
+                                                    <span>{inStock[i].Product.length}</span>
                                                 </Badge>
                                             </Nav.Link>
                                         </Nav.Item>
