@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Store from '../components/Store'
+import Storage from './DisplayHandler'
 
 function FetchHandler() {
     const [response, setResponse] = useState(null)
@@ -31,13 +31,14 @@ function FetchHandler() {
             const flattenData = data.flat()
 
             const manufacturerArray = getManufacturers(flattenData)
+
             for (let k = 0; k < manufacturerArray.length; k++) {
                 const element = manufacturerArray[k];
 
                 let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${element}`)
                 let res2Array = await res2.json()
 
-                if (res2Array) {
+                if (res2Array.response) {
                     for (let j = 0; j < res2Array.response.length; j++) {
                         let xmlString = res2Array.response[j].DATAPAYLOAD
                         const parser = new DOMParser()
@@ -47,6 +48,7 @@ function FetchHandler() {
                             const element = flattenData[i];
                             if (element.id.toUpperCase() === res2Array.response[j].id.toUpperCase()) {
                                 element.availability = xmlFormat.getElementsByTagName("INSTOCKVALUE")[0].childNodes[0].nodeValue;
+
                                 break;
 
                             }
@@ -91,14 +93,14 @@ function FetchHandler() {
     }, [])
 
     return (
-        <div>
+        <>
             {loading && (
                 <h1>Loading...</h1>
             )}
             {!loading && response && (
-                <Store inStock={response} />
+                <Storage inStock={response} />
             )}
-        </div>
+        </>
     )
 }
 

@@ -7,17 +7,19 @@ import {
     Table,
     Badge,
     Alert,
+    Container,
 } from "react-bootstrap";
-import Pagination from "react-bootstrap-4-pagination";
+import Pagination from "react-pagination-js";
+import "react-pagination-js/dist/styles.css";
 
-function Store({ inStock }) {
+function Storage({ inStock }) {
     console.log(inStock)
     const [data, setData] = useState(null)
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageNumbers, setPageNumbers] = useState(null);
 
-    const changePage = (value) => setCurrentPage(value);
+    const changePage = (numPage) => setCurrentPage(numPage);
 
     const getPages = () => {
         const pages = [];
@@ -57,7 +59,7 @@ function Store({ inStock }) {
     }, [currentPage])
 
     return (
-        <div>
+        <Container className="mt-5">
             {data && data.length > 0 && (
                 <Tab.Container
                     id="left-tabs-example"
@@ -127,16 +129,12 @@ function Store({ inStock }) {
                                                             </tbody>
                                                         </Table>
                                                         <div className="d-flex justify-content-between pl-3">
+
                                                             <Pagination
-                                                                threeDots
-                                                                totalPages={pageNumbers[i].length}
                                                                 currentPage={currentPage}
-                                                                showMax={5}
-                                                                prevNext
-                                                                activeBgColor="#504c8a"
-                                                                color="#504c8a"
-                                                                activeBorderColor="#504c8a"
-                                                                onClick={(page) => changePage(page)}
+                                                                totalSize={inStock[i].Product.length}
+                                                                changeCurrentPage={changePage}
+                                                                numberOfPagesNextToActivePage={4}
                                                             />
 
                                                             <Alert variant="light" className="text-right">
@@ -161,8 +159,8 @@ function Store({ inStock }) {
                     </Row>
                 </Tab.Container>
             )}
-        </div>
+        </Container>
     )
 }
 
-export default Store
+export default Storage
