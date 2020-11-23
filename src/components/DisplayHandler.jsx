@@ -128,7 +128,7 @@ function Storage({ inStock }) {
                                                                 })}
                                                             </tbody>
                                                         </Table>
-                                                        <div className="d-flex justify-content-between pl-3">
+                                                        <div className="d-flex justify-content-between">
 
                                                             <Pagination
                                                                 currentPage={currentPage}
