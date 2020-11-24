@@ -6,56 +6,55 @@ function FetchHandler() {
     const [loading, setLoading] = useState(false)
     const [hasError, setHasError] = useState(false)
 
-    const endpoints = [`${process.env.REACT_APP_API_URL}/products/jackets`, `${process.env.REACT_APP_API_URL}/products/shirts`, `${process.env.REACT_APP_API_URL}/products/accessories`]
-
-    const getManufacturers = (array) => {
-        const manufacturerSET = new Set()
-        for (let i = 0; i < array.length; i++) {
-            const element = array[i];
-            manufacturerSET.add(element.manufacturer)
-        }
-        return [...manufacturerSET]
-    }
+    const categories = ["jackets", "shirts", "accessories"]
 
     const fetchData = async () => {
         console.time("timer1");
         let data = []
         try {
             setLoading(true)
-            for (const api of endpoints) {
-                let res1 = await fetch(api)
+            for (const type of categories) {
+                const url = `${process.env.REACT_APP_API_URL}/products/${type}`
+                let res1 = await fetch(url)
                 let res1Array = await res1.json()
                 data.push(res1Array)
             }
 
             const flattenData = data.flat()
 
-            const manufacturerArray = getManufacturers(flattenData)
+            let availabilityArray = []
 
-            for (let k = 0; k < manufacturerArray.length; k++) {
-                const element = manufacturerArray[k];
+            const manufacturerArray = Array.from(new Set(flattenData.map(obj => obj.manufacturer)))
 
-                let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${element}`)
+            for (const manufacturer of manufacturerArray) {
+                let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${manufacturer}`)
                 let res2Array = await res2.json()
 
-                if (res2Array.response) {
-                    for (let j = 0; j < res2Array.response.length; j++) {
-                        let xmlString = res2Array.response[j].DATAPAYLOAD
+                for (let i = 0; i < res2Array.response.length; i++) {
+                    if (res2Array.response[i].id && res2Array.response[i].DATAPAYLOAD) {
+                        let xmlString = res2Array.response[i].DATAPAYLOAD
                         const parser = new DOMParser()
                         const xmlFormat = parser.parseFromString(xmlString, "application/xml")
+                        res2Array.response[i].DATAPAYLOAD = xmlFormat.getElementsByTagName("INSTOCKVALUE")[0].childNodes[0].nodeValue;
+                        availabilityArray.push(res2Array.response[i])
+                    }
+                }
 
-                        for (let i = 0; i < flattenData.length; i++) {
-                            const element = flattenData[i];
-                            if (element.id.toUpperCase() === res2Array.response[j].id.toUpperCase()) {
-                                element.availability = xmlFormat.getElementsByTagName("INSTOCKVALUE")[0].childNodes[0].nodeValue;
+            }
 
-                                break;
+            for (let j = 0; j < flattenData.length; j++) {
+                const element = flattenData[j];
+                for (let k = 0; k < availabilityArray.length; k++) {
+                    const availabilityInfo = availabilityArray[k];
 
-                            }
-                        }
+                    if (element.id.toUpperCase() === availabilityInfo.id) {
+                        element.availability = availabilityInfo.DATAPAYLOAD
+                        break;
                     }
                 }
             }
+
+            console.log(availabilityArray)
 
             const combinedData = flattenData.reduce((r, a) => {
                 r[a.type] = r[a.type] || [];
@@ -72,6 +71,7 @@ function FetchHandler() {
 
         } catch (error) {
             setHasError(true)
+            console.log(error)
             setLoading(false)
         }
     }
