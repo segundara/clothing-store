@@ -56,36 +56,24 @@ function FetchHandler() {
                     }
                 }
             }
-            getFormatedData(data)
+
+            const combinedData = flattenData.reduce((r, a) => {
+                r[a.type] = r[a.type] || [];
+                r[a.type].push(a);
+                return r;
+            }, Object.create(null));
+
+            const finalOutput = Object.entries(combinedData).map(([Category, Product]) => ({ Category, Product }));
+            console.log(finalOutput)
+            setResponse(finalOutput)
+            setLoading(false)
+
             console.timeEnd("timer1");
 
         } catch (error) {
             setHasError(true)
             setLoading(false)
         }
-    }
-
-    const getFormatedData = async (data) => {
-        const getData = []
-
-        let list1 = {}
-        let list2 = {}
-        let list3 = {}
-
-        list1.Category = "Jackets"
-        list1.Product = data[0]
-        list2.Category = "Shirts"
-        list2.Product = data[1]
-        list3.Category = "Accessories"
-        list3.Product = data[2]
-
-        getData.push(list1)
-        getData.push(list2)
-        getData.push(list3)
-
-        setResponse(getData)
-
-        setLoading(false)
     }
 
     useEffect(() => {
@@ -99,6 +87,9 @@ function FetchHandler() {
             )}
             {!loading && response && (
                 <Storage inStock={response} />
+            )}
+            {!loading && !response && hasError && (
+                <h1>Some problems while getting data!!!</h1>
             )}
         </>
     )
