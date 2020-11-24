@@ -77,7 +77,7 @@ function Storage({ inStock }) {
                                                 className="d-flex justify-content-between btn-link px-1"
                                             >
                                                 <small>
-                                                    <b>{cat.Category}</b>
+                                                    <b>{cat.Category.toUpperCase()}</b>
                                                 </small>
                                                 <Badge variant="light">
                                                     <span>{inStock[i].Product.length}</span>
