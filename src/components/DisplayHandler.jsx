@@ -8,6 +8,7 @@ import {
     Badge,
     Alert,
     Container,
+    ListGroup,
 } from "react-bootstrap";
 import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
@@ -96,12 +97,13 @@ function Storage({ inStock }) {
                                             {
                                                 list.Product.length > 0 && (
                                                     <>
-                                                        <Table responsive="sm" size="sm">
+                                                        <Table responsive="sm" size="sm" striped bordered>
                                                             <thead>
                                                                 <tr>
                                                                     <th>#</th>
                                                                     <th>Name</th>
                                                                     <th>Price</th>
+                                                                    <th>Color</th>
                                                                     <th>Manufacturer</th>
                                                                     <th>Availability</th>
                                                                 </tr>
@@ -121,6 +123,13 @@ function Storage({ inStock }) {
                                                                             </td>
                                                                             <td>{s.name}</td>
                                                                             <td>{s.price}</td>
+                                                                            <td>{s.color.map((value, i) => {
+                                                                                return (
+                                                                                    <ListGroup key={i}>
+                                                                                        <ListGroup.Item>{value}</ListGroup.Item>
+                                                                                    </ListGroup>
+                                                                                )
+                                                                            })}</td>
                                                                             <td>{s.manufacturer}</td>
                                                                             <td>{s.availability}</td>
                                                                         </tr>
