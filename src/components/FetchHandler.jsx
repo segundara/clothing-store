@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Storage from './DisplayHandler'
+import { Spinner } from "react-bootstrap";
 
 function FetchHandler() {
     const [response, setResponse] = useState(null)
@@ -31,12 +32,11 @@ function FetchHandler() {
                 let res2Array = await res2.json()
 
                 for (let i = 0; i < res2Array.response.length; i++) {
-                    if (res2Array.response[i].id && res2Array.response[i].DATAPAYLOAD) {
-                        let xmlString = res2Array.response[i].DATAPAYLOAD
-                        const parser = new DOMParser()
-                        const xmlFormat = parser.parseFromString(xmlString, "application/xml")
-                        res2Array.response[i].DATAPAYLOAD = xmlFormat.getElementsByTagName("INSTOCKVALUE")[0].childNodes[0].nodeValue;
-                        availabilityArray.push(res2Array.response[i])
+                    const element = res2Array.response[i]
+                    if (element.id && element.DATAPAYLOAD) {
+                        let xmlString = element.DATAPAYLOAD.split("<INSTOCKVALUE>")[1].split("</INSTOCKVALUE>")[0]
+                        element.DATAPAYLOAD = xmlString
+                        availabilityArray.push(element)
                     }
                 }
 
@@ -53,8 +53,6 @@ function FetchHandler() {
                     }
                 }
             }
-
-            console.log(availabilityArray)
 
             const combinedData = flattenData.reduce((r, a) => {
                 r[a.type] = r[a.type] || [];
@@ -83,7 +81,15 @@ function FetchHandler() {
     return (
         <>
             {loading && (
-                <h1>Loading...</h1>
+                <div
+                    style={{
+                        width: "10%",
+                        height: "auto",
+                        margin: "45vh 50vw",
+                    }}
+                >
+                    <Spinner animation="border" variant="dark" />
+                </div>
             )}
             {!loading && response && (
                 <Storage inStock={response} />

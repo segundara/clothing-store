@@ -75,7 +75,7 @@ function Storage({ inStock }) {
                                         <Nav.Item key={i}>
                                             <Nav.Link
                                                 eventKey={i}
-                                                className="d-flex justify-content-between btn-link px-1"
+                                                className="d-flex justify-content-between px-3"
                                             >
                                                 <small>
                                                     <b>{cat.Category.toUpperCase()}</b>
@@ -123,13 +123,11 @@ function Storage({ inStock }) {
                                                                             </td>
                                                                             <td>{s.name}</td>
                                                                             <td>{s.price}</td>
-                                                                            <td>{s.color.map((value, i) => {
+                                                                            <td><ol>{s.color.map((value, i) => {
                                                                                 return (
-                                                                                    <ListGroup key={i}>
-                                                                                        <ListGroup.Item>{value}</ListGroup.Item>
-                                                                                    </ListGroup>
+                                                                                    <li key={i}>{value}</li>
                                                                                 )
-                                                                            })}</td>
+                                                                            })}</ol></td>
                                                                             <td>{s.manufacturer}</td>
                                                                             <td>{s.availability}</td>
                                                                         </tr>
@@ -144,9 +142,10 @@ function Storage({ inStock }) {
                                                                 totalSize={inStock[i].Product.length}
                                                                 changeCurrentPage={changePage}
                                                                 numberOfPagesNextToActivePage={4}
+                                                                theme="border-bottom"
                                                             />
 
-                                                            <Alert variant="light" className="text-right">
+                                                            <Alert variant="light">
                                                                 page <strong>{currentPage}</strong> of{" "}
                                                                 <strong>{pageNumbers[i].length}</strong>
                                                             </Alert>
