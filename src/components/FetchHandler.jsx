@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import Storage from './DisplayHandler'
+import React, { useEffect, useState } from 'react';
+import Storage from './DisplayHandler';
 import { Spinner } from "react-bootstrap";
 
 function FetchHandler() {
@@ -7,25 +7,23 @@ function FetchHandler() {
     const [loading, setLoading] = useState(false)
     const [hasError, setHasError] = useState(false)
 
-    const categories = ["jackets", "shirts", "accessories"]
+    const categories = ["jackets", "shirts", "accessories"];
 
     const fetchData = async () => {
-        console.time("timer1");
-        let data = []
+        console.time("timer");
+        let data = [];
         try {
             setLoading(true)
             for (const type of categories) {
                 const url = `${process.env.REACT_APP_API_URL}/products/${type}`
                 let res1 = await fetch(url)
                 let res1Array = await res1.json()
-                data.push(res1Array)
+                data = [...data, ...res1Array]
             }
-
-            const flattenData = data.flat()
 
             let availabilityArray = []
 
-            const manufacturerArray = Array.from(new Set(flattenData.map(obj => obj.manufacturer)))
+            const manufacturerArray = Array.from(new Set(data.map(obj => obj.manufacturer)))
 
             for (const manufacturer of manufacturerArray) {
                 let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${manufacturer}`)
@@ -42,8 +40,8 @@ function FetchHandler() {
 
             }
 
-            for (let j = 0; j < flattenData.length; j++) {
-                const element = flattenData[j];
+            for (let j = 0; j < data.length; j++) {
+                const element = data[j];
                 for (let k = 0; k < availabilityArray.length; k++) {
                     const availabilityInfo = availabilityArray[k];
 
@@ -54,18 +52,17 @@ function FetchHandler() {
                 }
             }
 
-            const combinedData = flattenData.reduce((r, a) => {
+            const groupedByType = data.reduce((r, a) => {
                 r[a.type] = r[a.type] || [];
                 r[a.type].push(a);
                 return r;
             }, Object.create(null));
 
-            const finalOutput = Object.entries(combinedData).map(([Category, Product]) => ({ Category, Product }));
-            console.log(finalOutput)
+            const finalOutput = Object.entries(groupedByType).map(([Category, Product]) => ({ Category, Product }));
             setResponse(finalOutput)
             setLoading(false)
 
-            console.timeEnd("timer1");
+            console.timeEnd("timer");
 
         } catch (error) {
             setHasError(true)
