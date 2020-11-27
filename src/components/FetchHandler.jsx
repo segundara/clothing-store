@@ -37,7 +37,6 @@ function FetchHandler() {
                         availabilityArray.push(element)
                     }
                 }
-
             }
 
             for (let j = 0; j < data.length; j++) {
