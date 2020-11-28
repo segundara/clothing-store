@@ -10,7 +10,7 @@
   <h3 align="center">Clothing Warehouse</h3>
 
   <p align="center">
-    A_WEB_APP_FOR_CLOTHING_STORE
+    A_SIMPLE_LISTING_APP_FOR_CLOTHING_STORE
     <br />
     <a href="https://github.com/segundara/clothing-store"><strong>Explore the repo »</strong></a>
     <br />
