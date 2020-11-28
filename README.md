@@ -88,4 +88,4 @@ Project Link: [https://github.com/segundara/clothing-store](https://github.com/s
 [issues-url]: https://github.com/segundara/clothing-store/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/olusegunemmanuelokedara/
-[product-screenshot]: 
+[product-screenshot]: https://github.com/segundara/clothing-store/blob/main/public/screenshot.PNG
