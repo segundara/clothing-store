@@ -10,7 +10,6 @@ function FetchHandler() {
     const categories = ["jackets", "shirts", "accessories"];
 
     const fetchData = async () => {
-        console.time("timer");
         let data = [];
         try {
             setLoading(true)
@@ -60,8 +59,6 @@ function FetchHandler() {
             const finalOutput = Object.entries(groupedByType).map(([Category, Product]) => ({ Category, Product }));
             setResponse(finalOutput)
             setLoading(false)
-
-            console.timeEnd("timer");
 
         } catch (error) {
             setHasError(true)

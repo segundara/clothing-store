@@ -8,13 +8,12 @@ import {
     Badge,
     Alert,
     Container,
-    ListGroup,
 } from "react-bootstrap";
 import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
 
 function Storage({ inStock }) {
-    console.log(inStock)
+
     const [data, setData] = useState(null)
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +31,7 @@ function Storage({ inStock }) {
             pages.push(innerPages);
 
         })
-        console.log(pages)
+
         setPageNumbers(pages);
 
     };
