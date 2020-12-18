@@ -42,7 +42,9 @@
 
 Here is a simple web app for a clothing brand needed in their warehouses. They can check simple product and availability information from a single UI. And the products are grouped into category. 
 
-There are three product categories for now: jackets, shirts, and accessories. Selecting each tab of the categories reveals the products under selected category. User can easily switch between product categories quickly by just selecting the category tab. Pagination is also added, so as to make it is easier for users.
+There are three product categories for now: jackets, shirts, and accessories. Selecting each tab of the categories reveals the products under selected category. User can easily switch between product categories quickly by just selecting the category tab. Pagination is also added, so as to make it is easier for users. 
+
+One of the things I like about this project is being able to consume 2 legacy API and combined the result to get all that need to be displayed. I had to use some recent JavaScript methods like  "map and reduce".
 
 
 
