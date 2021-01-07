@@ -10,19 +10,20 @@ function FetchHandler() {
     const categories = ["jackets", "shirts", "accessories"];
 
     const fetchData = async () => {
-        let data = [];
+        let initialData = [];
+        let finalData = [];
         try {
             setLoading(true)
             for (const type of categories) {
                 const url = `${process.env.REACT_APP_API_URL}/products/${type}`
                 let res1 = await fetch(url)
                 let res1Array = await res1.json()
-                data = [...data, ...res1Array]
+                initialData = [...initialData, ...res1Array]
             }
 
             let availabilityArray = []
 
-            const manufacturerArray = Array.from(new Set(data.map(obj => obj.manufacturer)))
+            const manufacturerArray = [...(new Set(initialData.map(obj => obj.manufacturer)))]
 
             for (const manufacturer of manufacturerArray) {
                 let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${manufacturer}`)
@@ -33,24 +34,25 @@ function FetchHandler() {
                     if (element.id && element.DATAPAYLOAD) {
                         let xmlString = element.DATAPAYLOAD.split("<INSTOCKVALUE>")[1].split("</INSTOCKVALUE>")[0]
                         element.DATAPAYLOAD = xmlString
-                        availabilityArray.push(element)
+                        availabilityArray = [...availabilityArray, element]
                     }
                 }
             }
 
-            for (let j = 0; j < data.length; j++) {
-                const element = data[j];
+            for (let j = 0; j < initialData.length; j++) {
+                let element = initialData[j];
                 for (let k = 0; k < availabilityArray.length; k++) {
                     const availabilityInfo = availabilityArray[k];
 
                     if (element.id.toUpperCase() === availabilityInfo.id) {
-                        element.availability = availabilityInfo.DATAPAYLOAD
+                        const availability = availabilityInfo.DATAPAYLOAD
+                        finalData = [...finalData, { ...element, availability }]
                         break;
                     }
                 }
             }
 
-            const groupedByType = data.reduce((r, a) => {
+            const groupedByType = finalData.reduce((r, a) => {
                 r[a.type] = r[a.type] || [];
                 r[a.type].push(a);
                 return r;
