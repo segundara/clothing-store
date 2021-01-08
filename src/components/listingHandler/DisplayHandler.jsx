@@ -12,36 +12,20 @@ import {
 import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
 
-function Storage({ inStock }) {
+function Storage({ refinedData, pageNumbers }) {
 
     const [data, setData] = useState(null)
     const [perPage, setPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageNumbers, setPageNumbers] = useState(null);
 
     const changePage = (numPage) => setCurrentPage(numPage);
 
-    const getPages = () => {
-        const pages = [];
-        inStock.map((item) => {
-            let innerPages = [];
-            for (let j = 1; j <= Math.ceil(item.Product.length / perPage); j++) {
-                innerPages.push(j);
-            }
-            pages.push(innerPages);
-
-        })
-
-        setPageNumbers(pages);
-
-    };
-
     const showCurrentList = () => {
         let currentDisplay = []
-        for (let i = 0; i < inStock.length; i++) {
+        for (let i = 0; i < refinedData.length; i++) {
             currentDisplay[i] = {}
-            for (let item in inStock[i]) {
-                currentDisplay[i][item] = inStock[i][item];
+            for (let item in refinedData[i]) {
+                currentDisplay[i][item] = refinedData[i][item];
             }
         }
 
@@ -54,7 +38,6 @@ function Storage({ inStock }) {
     }
 
     useEffect(() => {
-        getPages()
         showCurrentList()
     }, [currentPage])
 
@@ -80,7 +63,7 @@ function Storage({ inStock }) {
                                                     <b>{cat.Category.toUpperCase()}</b>
                                                 </small>
                                                 <Badge variant="light">
-                                                    <span>{inStock[i].Product.length}</span>
+                                                    <span>{refinedData[i].Product.length}</span>
                                                 </Badge>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -138,7 +121,7 @@ function Storage({ inStock }) {
 
                                                             <Pagination
                                                                 currentPage={currentPage}
-                                                                totalSize={inStock[i].Product.length}
+                                                                totalSize={refinedData[i].Product.length}
                                                                 changeCurrentPage={changePage}
                                                                 numberOfPagesNextToActivePage={4}
                                                                 theme="border-bottom"

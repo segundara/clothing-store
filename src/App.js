@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import FetchHandler from './components/FetchHandler';
+import FetchHandler from './components/parserHandler/FetchDataHandler'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 function App() {
