@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Storage from './DisplayHandler';
+import CurrentListHandler from './CurrentListHandler';
 
 function PaginationHandler({ processedData }) {
 
@@ -32,7 +32,7 @@ function PaginationHandler({ processedData }) {
     return (
         <>
             {refinedData && pageNumbers && (
-                <Storage refinedData={refinedData} pageNumbers={pageNumbers} />
+                <CurrentListHandler refinedData={refinedData} pageNumbers={pageNumbers} />
             )}
         </>
     )

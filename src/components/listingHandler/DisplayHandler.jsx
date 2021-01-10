@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
     Row,
     Col,
@@ -12,34 +12,9 @@ import {
 import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
 
-function Storage({ refinedData, pageNumbers }) {
+function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, refinedData }) {
 
-    const [data, setData] = useState(null)
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const changePage = (numPage) => setCurrentPage(numPage);
-
-    const showCurrentList = () => {
-        let currentDisplay = []
-        for (let i = 0; i < refinedData.length; i++) {
-            currentDisplay[i] = {}
-            for (let item in refinedData[i]) {
-                currentDisplay[i][item] = refinedData[i][item];
-            }
-        }
-
-        for (let j = 0; j < currentDisplay.length; j++) {
-            const element = currentDisplay[j];
-            element.Product = element.Product.slice(currentPage * perPage - perPage, currentPage * perPage)
-        }
-
-        setData(currentDisplay)
-    }
-
-    useEffect(() => {
-        showCurrentList()
-    }, [currentPage])
+    const changePage = (pageNum) => updateCurrentPage(pageNum);
 
     return (
         <Container className="mt-5">
