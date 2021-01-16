@@ -12,13 +12,23 @@ import {
 import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
 
-function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, refinedData }) {
+import { useDispatch, useSelector } from "react-redux";
 
-    const changePage = (pageNum) => updateCurrentPage(pageNum);
+const Storage = () => {
+
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
+
+    const changePage = (pageNum) =>
+        dispatch({
+            type: "GET_CURRENT_PAGE",
+            payload: pageNum
+        });
 
     return (
         <Container className="mt-5">
-            {data && data.length > 0 && (
+
+            {state.data.currentList && state.data.currentList.length > 0 && (
                 <Tab.Container
                     id="left-tabs-example"
                     defaultActiveKey="0"
@@ -27,7 +37,7 @@ function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, r
                     <Row>
                         <Col sm={3}>
                             <Nav variant="pills" className="flex-column">
-                                {data.map((cat, i) => {
+                                {state.data.currentList.map((cat, i) => {
                                     return (
                                         <Nav.Item key={i}>
                                             <Nav.Link
@@ -38,7 +48,7 @@ function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, r
                                                     <b>{cat.Category.toUpperCase()}</b>
                                                 </small>
                                                 <Badge variant="light">
-                                                    <span>{refinedData[i].Product.length}</span>
+                                                    <span>{state.data.finalOutput[i].Product.length}</span>
                                                 </Badge>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -48,7 +58,7 @@ function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, r
                         </Col>
                         <Col sm={9}>
                             <Tab.Content>
-                                {data.map((list, i) => {
+                                {state.data.currentList.map((list, i) => {
                                     return (
                                         <Tab.Pane key={i} eventKey={i}>
                                             {
@@ -70,12 +80,12 @@ function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, r
                                                                     return (
                                                                         <tr key={i}>
                                                                             <td>
-                                                                                {currentPage > 1
+                                                                                {state.data.currentPage > 1
                                                                                     ? (i =
                                                                                         i +
                                                                                         1 +
-                                                                                        perPage * currentPage -
-                                                                                        perPage)
+                                                                                        state.data.perPage * state.data.currentPage -
+                                                                                        state.data.perPage)
                                                                                     : (i = i + 1)}
                                                                             </td>
                                                                             <td>{s.name}</td>
@@ -95,16 +105,16 @@ function Storage({ data, perPage, currentPage, updateCurrentPage, pageNumbers, r
                                                         <div className="d-flex justify-content-between">
 
                                                             <Pagination
-                                                                currentPage={currentPage}
-                                                                totalSize={refinedData[i].Product.length}
+                                                                currentPage={state.data.currentPage}
+                                                                totalSize={state.data.finalOutput[i].Product.length}
                                                                 changeCurrentPage={changePage}
                                                                 numberOfPagesNextToActivePage={4}
                                                                 theme="border-bottom"
                                                             />
 
                                                             <Alert variant="light">
-                                                                page <strong>{currentPage}</strong> of{" "}
-                                                                <strong>{pageNumbers[i].length}</strong>
+                                                                page <strong>{state.data.currentPage}</strong> of{" "}
+                                                                <strong>{state.data.pageNumbers[i].length}</strong>
                                                             </Alert>
                                                         </div>
 

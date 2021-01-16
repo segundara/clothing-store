@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import CombinedDataHandler from './CombinedDataHandler'
 
-function AvailabilityInfoHandler({ manufacturerList, inStock }) {
+import { useDispatch, useSelector } from "react-redux";
+
+const AvailabilityInfoHandler = () => {
+
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
     const getAvailabilityInfo = async () => {
 
-        try {
-            let availabilityArray = []
-            const manufacturerArray = await manufacturerList;
+        let availabilityArray = []
+        const manufacturerArray = state.data.manufacturers;
 
+        try {
             for (const manufacturer of manufacturerArray) {
                 let res2 = await fetch(`${process.env.REACT_APP_API_URL}/availability/${manufacturer}`)
                 let res2Array = await res2.json()
@@ -23,16 +28,26 @@ function AvailabilityInfoHandler({ manufacturerList, inStock }) {
                 }
             }
 
-            return availabilityArray
+            dispatch({
+                type: "GET_AVAILABILITY_INFO",
+                payload: availabilityArray
+            });
 
         } catch (error) {
-            console.log(error)
+            dispatch({
+                type: "HAS_ERROR",
+                payload: error
+            });
         }
     }
 
+    useEffect(() => {
+        getAvailabilityInfo();
+    }, [state.data.manufacturers])
+
     return (
         <>
-            <CombinedDataHandler availabilityArray={getAvailabilityInfo()} inStock={inStock} />
+            <CombinedDataHandler />
         </>
     )
 }

@@ -1,22 +1,33 @@
-import React from 'react'
-// import Storage from './DisplayHandler'
+import React, { useEffect } from 'react'
 import PaginationHandler from '../listingHandler/PaginationHandler';
+import { useDispatch, useSelector } from "react-redux";
 
-function FinalOutputHandler({ finalData }) {
+const FinalOutputHandler = () => {
 
-    const groupedData = async () => {
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
-        const finalInfo = await finalData;
+    const finalData = () => {
 
-        const finalOutput = Object.entries(finalInfo).map(([Category, Product]) => ({ Category, Product }));
+        const finalInfo = state.data.groupedByCategory;
 
-        return finalOutput;
+        const finalList = Object.entries(finalInfo).map(([Category, Product]) => ({ Category, Product }));
+
+
+        dispatch({
+            type: "GET_FINAL_DATA",
+            payload: finalList
+        })
 
     }
 
+    useEffect(() => {
+        finalData()
+    }, [state.data.groupedByCategory])
+
     return (
         <>
-            <PaginationHandler processedData={groupedData()} />
+            <PaginationHandler />
         </>
     )
 }

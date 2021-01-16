@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import FinalOutputHandler from './FinalOutputHandler';
 
-function GroupedByCategoryHandler({ combinedData }) {
+import { useDispatch, useSelector } from "react-redux";
 
-    const groupedData = async () => {
+const GroupedByCategoryHandler = () => {
 
-        const combinedInfo = await combinedData;
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
+
+    const groupedData = () => {
+
+        const combinedInfo = state.data.combinedData;
 
         const groupedByType = combinedInfo.reduce((r, a) => {
             r[a.type] = r[a.type] || [];
@@ -13,12 +18,20 @@ function GroupedByCategoryHandler({ combinedData }) {
             return r;
         }, Object.create(null));
 
-        return groupedByType;
+        dispatch({
+            type: "GET_GROUPED_DATA",
+            payload: groupedByType
+        })
 
     }
+
+    useEffect(() => {
+        groupedData()
+    }, [state.data.combinedData])
+
     return (
         <>
-            <FinalOutputHandler finalData={groupedData()} />
+            <FinalOutputHandler />
         </>
     )
 }

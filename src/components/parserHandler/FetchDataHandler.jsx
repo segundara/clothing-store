@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ManufacturerListHandler from './ManufacturerListHandler'
 import { Spinner } from "react-bootstrap";
 
-function FetchHandler() {
-    const [response, setResponse] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [hasError, setHasError] = useState(false)
+import { useDispatch, useSelector } from "react-redux";
+
+const FetchHandler = () => {
+
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
     const categories = ["jackets", "shirts", "accessories"];
 
     const fetchData = async () => {
         let initialData = [];
         try {
-            setLoading(true)
+
             for (const type of categories) {
                 const url = `${process.env.REACT_APP_API_URL}/products/${type}`
                 let res1 = await fetch(url)
@@ -20,23 +22,30 @@ function FetchHandler() {
                 initialData = [...initialData, ...res1Array]
             }
 
-            setResponse(initialData)
-            setLoading(false)
+            dispatch({
+                type: "LOADING_STARTS"
+            });
+            dispatch({
+                type: "GET_PRODUCT_LIST",
+                payload: initialData
+            });
 
         } catch (error) {
-            setHasError(true)
-            console.log(error)
-            setLoading(false)
+            dispatch({
+                type: "HAS_ERROR",
+                payload: error
+            });
         }
+
     }
 
     useEffect(() => {
-        fetchData()
+        fetchData();
     }, [])
 
     return (
         <>
-            {loading && (
+            {state.status.isLoading && (
                 <div
                     style={{
                         width: "10%",
@@ -47,12 +56,13 @@ function FetchHandler() {
                     <Spinner animation="border" variant="dark" />
                 </div>
             )}
-            {!loading && response && (
-                <ManufacturerListHandler inStock={response} />
+            {!state.status.isLoading && state.status.error !== null && (
+                <>
+                    <h1>Some problems while getting data!!!</h1>
+                    {console.log(state.status.error)}
+                </>
             )}
-            {!loading && !response && hasError && (
-                <h1>Some problems while getting data!!!</h1>
-            )}
+            <ManufacturerListHandler />
         </>
     )
 }

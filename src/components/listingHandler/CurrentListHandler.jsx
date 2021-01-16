@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Storage from './DisplayHandler';
+import { useDispatch, useSelector } from "react-redux";
 
-function CurrentListHandler({ refinedData, pageNumbers }) {
+const CurrentListHandler = () => {
 
-    const [data, setData] = useState(null)
-    const [perPage, setPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const showCurrentPage = (pageNum) => setCurrentPage(pageNum);
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
     const showCurrentList = () => {
         let currentDisplay = []
+        const refinedData = state.data.finalOutput
         for (let i = 0; i < refinedData.length; i++) {
             currentDisplay[i] = {}
             for (let item in refinedData[i]) {
@@ -20,27 +19,27 @@ function CurrentListHandler({ refinedData, pageNumbers }) {
 
         for (let j = 0; j < currentDisplay.length; j++) {
             const element = currentDisplay[j];
-            element.Product = element.Product.slice(currentPage * perPage - perPage, currentPage * perPage)
+            element.Product = element.Product.slice(state.data.currentPage * state.data.perPage - state.data.perPage, state.data.currentPage * state.data.perPage)
         }
 
-        setData(currentDisplay)
+        dispatch({
+            type: "GET_CURRENT_LISTING",
+            payload: currentDisplay
+        });
+
+        dispatch({
+            type: "LOADING_DONE"
+        });
     }
 
     useEffect(() => {
         showCurrentList()
-    }, [currentPage])
+    }, [state.data.currentPage, state.data.pageNumbers])
 
     return (
         <>
-            {data && perPage && currentPage && (
-                <Storage
-                    data={data}
-                    perPage={perPage}
-                    currentPage={currentPage}
-                    pageNumbers={pageNumbers}
-                    refinedData={refinedData}
-                    updateCurrentPage={showCurrentPage}
-                />
+            {!state.status.isLoading && state.data.currentList.length > 0 && (
+                <Storage />
             )}
         </>
     )

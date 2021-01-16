@@ -1,39 +1,40 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import CurrentListHandler from './CurrentListHandler';
+import { useDispatch, useSelector } from "react-redux";
 
-function PaginationHandler({ processedData }) {
+const PaginationHandler = () => {
 
-    const [refinedData, setRefinedData] = useState(null)
-    const [perPage, setPerPage] = useState(10);
-    const [pageNumbers, setPageNumbers] = useState(null);
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
-    const getPages = async () => {
-        const data = await processedData;
-        setRefinedData(data)
+    const getPages = () => {
+        const listing = state.data.finalOutput;
 
         const pages = [];
-        data.map((item) => {
+        listing.map((item) => {
             let innerPages = [];
-            for (let j = 1; j <= Math.ceil(item.Product.length / perPage); j++) {
+            for (let j = 1; j <= Math.ceil(item.Product.length / state.data.perPage); j++) {
                 innerPages.push(j);
             }
             pages.push(innerPages);
 
         })
 
-        setPageNumbers(pages);
+
+        dispatch({
+            type: "GET_PAGE_NUMBERS",
+            payload: pages
+        })
 
     };
 
     useEffect(() => {
         getPages()
-    }, [processedData])
+    }, [state.data.finalOutput])
 
     return (
         <>
-            {refinedData && pageNumbers && (
-                <CurrentListHandler refinedData={refinedData} pageNumbers={pageNumbers} />
-            )}
+            <CurrentListHandler />
         </>
     )
 }
