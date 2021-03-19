@@ -7,23 +7,24 @@ const FinalOutputHandler = () => {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-    const finalData = () => {
-
-        const finalInfo = state.data.groupedByCategory;
-
-        const finalList = Object.entries(finalInfo).map(([Category, Product]) => ({ Category, Product }));
-
-
-        dispatch({
-            type: "GET_FINAL_DATA",
-            payload: finalList
-        })
-
-    }
-
     useEffect(() => {
+
+        const finalData = () => {
+
+            const finalInfo = state.data.groupedByCategory;
+
+            const finalList = Object.entries(finalInfo).map(([Category, Product]) => ({ Category, Product }));
+
+            dispatch({
+                type: "GET_FINAL_DATA",
+                payload: finalList
+            })
+
+        }
+
         finalData()
-    }, [state.data.groupedByCategory])
+
+    }, [dispatch, state.data.groupedByCategory])
 
     return (
         <>
