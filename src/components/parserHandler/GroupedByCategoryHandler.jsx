@@ -8,26 +8,28 @@ const GroupedByCategoryHandler = () => {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-    const groupedData = () => {
-
-        const combinedInfo = state.data.combinedData;
-
-        const groupedByType = combinedInfo.reduce((r, a) => {
-            r[a.type] = r[a.type] || [];
-            r[a.type].push(a);
-            return r;
-        }, Object.create(null));
-
-        dispatch({
-            type: "GET_GROUPED_DATA",
-            payload: groupedByType
-        })
-
-    }
-
     useEffect(() => {
+
+        const groupedData = () => {
+
+            const combinedInfo = state.data.combinedData;
+
+            const groupedByType = combinedInfo.reduce((r, a) => {
+                r[a.type] = r[a.type] || [];
+                r[a.type] = [...r[a.type], a]
+                return r;
+            }, Object.create(null));
+
+            dispatch({
+                type: "GET_GROUPED_DATA",
+                payload: groupedByType
+            })
+
+        }
+
         groupedData()
-    }, [state.data.combinedData])
+
+    }, [dispatch, state.data.combinedData])
 
     return (
         <>
