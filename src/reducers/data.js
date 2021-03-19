@@ -1,4 +1,4 @@
-export default function (state = {}, action) {
+export default function dataReducer(state = {}, action) {
     switch (action.type) {
 
         case "GET_PRODUCT_LIST":

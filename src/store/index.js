@@ -9,7 +9,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const initialState = {
     status: {
         isLoading: false,
-        error: null,
+        error: false
     },
     data: {
         products: [],
