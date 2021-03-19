@@ -5,24 +5,25 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ManufacturerListHandler = () => {
 
-
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-    const getManufacturers = () => {
-
-        const items = state.data.products
-        const manufacturerArray = [...(new Set(items.map(obj => obj.manufacturer)))]
-
-        dispatch({
-            type: "GET_MANUFACTURER_LIST",
-            payload: manufacturerArray
-        });
-    }
-
     useEffect(() => {
+
+        const getManufacturers = () => {
+            const items = state.data.products
+
+            const manufacturerArray = [...(new Set(items.map(obj => obj.manufacturer)))]
+
+            dispatch({
+                type: "GET_MANUFACTURER_LIST",
+                payload: manufacturerArray
+            });
+        }
+
         getManufacturers();
-    }, [state.data.products])
+
+    }, [dispatch, state.data.products])
 
     return (
         <>
