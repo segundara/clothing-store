@@ -1,12 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
-import FetchHandler from './components/parserHandler/FetchDataHandler'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Storage from './components/listingHandler/DisplayHandler';
 
 function App() {
   return (
     <Router>
-      <Route path="/" exact component={FetchHandler} />
+      <Route path="/" exact component={Storage} />
     </Router>
   );
 }
