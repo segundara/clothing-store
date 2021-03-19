@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Row,
     Col,
@@ -13,20 +13,54 @@ import Pagination from "react-pagination-js";
 import "react-pagination-js/dist/styles.css";
 
 import { useDispatch, useSelector } from "react-redux";
+import FetchHandler from '../parserHandler/FetchDataHandler';
+import CurrentListHandler from './CurrentListHandler';
+import Loader from '../parserHandler/Loader';
 
 const Storage = () => {
+    const [oldPage, setOldPage] = useState(null);
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-    const changePage = (pageNum) =>
+    const changePage = (pageNum) => {
+        setOldPage(state.data.currentPage);
         dispatch({
             type: "GET_CURRENT_PAGE",
             payload: pageNum
         });
 
+    }
+
+    useEffect(() => {
+        dispatch({
+            type: "LOADING_STARTS"
+        });
+        if (state.data.currentList.length > 0) {
+            dispatch({
+                type: "LOADING_DONE"
+            });
+        }
+    }, [dispatch, state.data.currentList.length])
+
     return (
         <Container className="mt-5">
+            {state.status.isLoading && (
+                <>
+                    <Loader />
+                    <FetchHandler />
+                </>
+            )}
+            {!state.status.isLoading && state.status.error && (
+                <>
+                    <h1>Some problems while getting data!!!</h1>
+                    {console.log(state.status.error)}
+                </>
+            )}
+            {state.data.currentPage !== oldPage && (
+                console.log(oldPage),
+                <CurrentListHandler />
+            )}
 
             {state.data.currentList && state.data.currentList.length > 0 && (
                 <Tab.Container
