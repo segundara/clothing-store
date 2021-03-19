@@ -7,30 +7,30 @@ const PaginationHandler = () => {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-    const getPages = () => {
-        const listing = state.data.finalOutput;
-
-        const pages = [];
-        listing.map((item) => {
-            let innerPages = [];
-            for (let j = 1; j <= Math.ceil(item.Product.length / state.data.perPage); j++) {
-                innerPages.push(j);
-            }
-            pages.push(innerPages);
-
-        })
-
-
-        dispatch({
-            type: "GET_PAGE_NUMBERS",
-            payload: pages
-        })
-
-    };
-
     useEffect(() => {
+
+        const getPages = () => {
+            const listing = state.data.finalOutput;
+
+            let pages = [];
+            listing.map((item) => {
+                let innerPages = [];
+                for (let j = 1; j <= Math.ceil(item.Product.length / state.data.perPage); j++) {
+                    innerPages = [...innerPages, j]
+                }
+                pages = [...pages, innerPages]
+                return pages;
+            })
+
+            dispatch({
+                type: "GET_PAGE_NUMBERS",
+                payload: pages
+            })
+        };
+
         getPages()
-    }, [state.data.finalOutput])
+
+    }, [dispatch, state.data.perPage, state.data.finalOutput])
 
     return (
         <>
